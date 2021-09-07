@@ -14,7 +14,6 @@ const Register = () => {
       "Content-Type": "application/json",
     }
 
-    console.log({ name, email, password, secret })
     try {
       await axios.post(
         "http://localhost:8000/api/auth/register",

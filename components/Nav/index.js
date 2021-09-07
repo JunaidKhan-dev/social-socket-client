@@ -1,7 +1,6 @@
 import React from "react"
 import Link from "next/link"
 import styles from "./styles.module.scss"
-console.log(styles)
 const Nav = () => {
   return (
     <nav className={`${styles.navbar} nav bg-info d-flex`}>
