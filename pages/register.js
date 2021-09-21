@@ -4,8 +4,10 @@ import { toast } from "react-toastify"
 import { Modal } from "antd"
 import Link from "next/link"
 
-import styles from "../stylesPages/register.module.scss"
 import AuthForm from "../components/Forms/AuthForm"
+import PageIntro from "../components/PageIntro"
+
+import styles from "../stylesPages/register.module.scss"
 
 const Register = () => {
   const [name, setName] = useState("")
@@ -53,12 +55,7 @@ const Register = () => {
   }
   return (
     <div className="container-fluid">
-      <div className={`row py-1 bg-secondary ${styles.bgImage} text-light`}>
-        <div className="col text-center">
-          <h1>Register </h1>
-        </div>
-      </div>
-
+      <PageIntro bgClass={styles.bgImage} title="Register" />
       <div className="row py-5">
         <div className="col-md-6 offset-md-3">
           <AuthForm
@@ -72,7 +69,19 @@ const Register = () => {
             secret={secret}
             setSecret={setSecret}
             loading={loading}
+            page="register"
+            btnTitle="Register"
           />
+        </div>
+      </div>
+      <div className="row">
+        <div className="col">
+          <div className="text-center">
+            Already Register? -{" "}
+            <Link href="/login">
+              <a>Login</a>
+            </Link>
+          </div>
         </div>
       </div>
       <div className="row">
