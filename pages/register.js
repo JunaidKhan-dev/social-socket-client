@@ -1,11 +1,21 @@
 import React, { useState } from "react"
 import axios from "axios"
+import { toast } from "react-toastify"
+import { Modal } from "antd"
+import Link from "next/link"
+
+import styles from "../stylesPages/register.module.scss"
+import AuthForm from "../components/Forms/AuthForm"
 
 const Register = () => {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [secret, setSecret] = useState("")
+  const [ok, setOk] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  const notify = (error) => toast.error(error)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -15,8 +25,9 @@ const Register = () => {
     }
 
     try {
-      await axios.post(
-        "http://localhost:8000/api/auth/register",
+      setLoading(true)
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_API}/auth/register`,
         {
           name,
           email,
@@ -28,14 +39,21 @@ const Register = () => {
         }
       )
 
-      console.log("success register")
+      setName("")
+      setEmail("")
+      setSecret("")
+      setPassword("")
+      setOk(data.ok)
+      setLoading(false)
     } catch (error) {
-      console.log("Error on register user", error)
+      setLoading(false)
+      notify(error.response.data)
+      console.log("Error on register user", error.response.data)
     }
   }
   return (
     <div className="container-fluid">
-      <div className="row py-1 bg-secondary text-light">
+      <div className={`row py-1 bg-secondary ${styles.bgImage} text-light`}>
         <div className="col text-center">
           <h1>Register </h1>
         </div>
@@ -43,59 +61,33 @@ const Register = () => {
 
       <div className="row py-5">
         <div className="col-md-6 offset-md-3">
-          <form onSubmit={handleSubmit}>
-            <div className="form-group mb-3">
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                type="text"
-                className="form-control"
-                placeholder="Enter Name"
-              />
-            </div>
-
-            <div className="form-group mb-3">
-              <input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                type="email"
-                className="form-control"
-                placeholder="Enter Email"
-              />
-            </div>
-
-            <div className="form-group mb-3">
-              <input
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                type="password"
-                className="form-control"
-                placeholder="Enter Password"
-              />
-            </div>
-            <div className="form-group mb-3">
-              <label className="text-muted d-block mb-1">Pick a question</label>
-              <select>
-                <option value="">What is your favorite color?</option>
-                <option value="">What is your best friend name?</option>
-                <option value="">What city your were born?</option>
-              </select>
-              <small className="form-text text-muted px-2">
-                you can use this to reset your password if forgotten
-              </small>
-            </div>
-
-            <div className="form-group mb-5">
-              <input
-                value={secret}
-                onChange={(e) => setSecret(e.target.value)}
-                type="text"
-                className="form-control"
-                placeholder="Write answer here"
-              />
-            </div>
-            <button className="btn btn-info col-12">Register</button>
-          </form>
+          <AuthForm
+            handleSubmit={handleSubmit}
+            name={name}
+            setName={setName}
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            secret={secret}
+            setSecret={setSecret}
+            loading={loading}
+          />
+        </div>
+      </div>
+      <div className="row">
+        <div className="col">
+          <Modal
+            title="successfully register"
+            visible={ok}
+            onCancel={() => setOk(false)}
+            footer={null}
+          >
+            <p>You have successfully Register - Welcome To Social Socket</p>
+            <Link href="/login">
+              <a className="btn btn-info btn-sm text-white"> Login</a>
+            </Link>
+          </Modal>
         </div>
       </div>
     </div>
